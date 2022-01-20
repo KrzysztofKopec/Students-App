@@ -1,0 +1,45 @@
+package com.kontociepok.studentsapp.users.controller;
+
+import com.kontociepok.studentsapp.users.model.User;
+import com.kontociepok.studentsapp.users.repository.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class UserIntegrationTest {
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    void shouldReturnAllUsersWhenExist() {
+        // given
+        userRepository.deleteAll();
+        userRepository.save(new User("Alek", "Bartek"));
+
+        // when
+        var result = restTemplate.getForEntity("http://localhost:" + port + "/users", User[].class);
+
+        // then
+        var user = new User("Alek", "Bartek");
+        user.setId(1L);
+        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(result.hasBody()).isTrue();
+        assertThat(result.getBody()).containsExactly(user);
+    }
+
+}
