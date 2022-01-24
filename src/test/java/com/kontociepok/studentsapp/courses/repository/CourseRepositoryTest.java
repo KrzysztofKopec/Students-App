@@ -23,7 +23,7 @@ class CourseRepositoryTest {
     void shouldReturnSaveUserWhenExists(){
         //given
         courseRepository.deleteAll();
-        var course = new Course("Biology");
+        var course = new Course("Biology", "xyz");
 
         //when
         var result = courseRepository.save(course);
@@ -36,11 +36,11 @@ class CourseRepositoryTest {
     void shouldReturnUserWhenExists(){
         //given
         courseRepository.deleteAll();
-        var course = new Course("Info");
+        var course = new Course("Info","Basic");
         courseRepository.save(course);
 
         //when
-        var result = courseRepository.getById(2L);
+        var result = courseRepository.getById(1L);
 
         //then
         assertThat(result.getName()).isEqualTo("Info");
@@ -50,7 +50,7 @@ class CourseRepositoryTest {
     void shouldReturnAllUsersWhenExists(){
         //given
         courseRepository.deleteAll();
-        var course = new Course("History");
+        var course = new Course("History", "Kazimierz");
         courseRepository.save(course);
 
         //when
@@ -64,11 +64,11 @@ class CourseRepositoryTest {
     void shouldDeleteUserByIdWhenExists(){
         //given
         courseRepository.deleteAll();
-        var course = new Course("Math");
+        var course = new Course("Math", "Pierwiastki");
         courseRepository.save(course);
 
         //when
-        courseRepository.deleteById(4L);
+        courseRepository.deleteById(1L);
 
         //then
         assertThat(courseRepository.findAll().size()).isEqualTo(0);

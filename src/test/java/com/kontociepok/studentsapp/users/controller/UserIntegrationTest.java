@@ -32,12 +32,11 @@ class UserIntegrationTest {
         userRepository.save(new User("Alek", "Bartek"));
 
         // when
-        var result = restTemplate.getForEntity("http://localhost:" + port + "/users", User[].class);
+        var result = restTemplate.getForEntity("http://localhost:" + port + "/users", UserResponse[].class);
 
         // then
-        var user = new User("Alek", "Bartek");
-        user.setId(1L);
-        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
+        var user = new UserResponse(1L, "Alek");
+        assertThat(result.getStatusCodeValue()==200);
         assertThat(result.hasBody()).isTrue();
         assertThat(result.getBody()).containsExactly(user);
     }

@@ -1,40 +1,50 @@
 package com.kontociepok.studentsapp.users.controller;
 
-import com.kontociepok.studentsapp.users.model.User;
-import com.kontociepok.studentsapp.users.repository.UserRepository;
+import com.kontociepok.studentsapp.courses.controller.CourseResponse;
+import com.kontociepok.studentsapp.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/users")
     List<UserResponse> findAllUsers(){
-        return userRepository.findAll().stream().map(this::convertToUserResponse).collect(Collectors.toList());
+        return userService.findAll();
     }
 
     @GetMapping("/users/{userId}")
     UserResponse getUser(@PathVariable long userId) {
-        return userRepository.findById(userId).map(this::convertToUserResponse).orElse(null);
+        return userService.findById(userId);
+    }
+
+    @GetMapping("/users/{userId}/courses")
+    List<CourseResponse> allCoursesOfUser(@PathVariable long userId){
+        return userService.allCoursesOfUser(userId);
+    }
+
+    @DeleteMapping("users/{userId}")
+    UserResponse deleteUser(@PathVariable long userId){
+        return userService.deleteUser(userId);
     }
 
     @PostMapping("/users")
     UserResponse createUser(@Valid @RequestBody UserCreateDto userCreateDto){
-        return convertToUserResponse(userRepository.save(new User(userCreateDto.getFirstName(), userCreateDto.getLastName())));
+        return userService.createUser(userCreateDto);
     }
 
-    private UserResponse convertToUserResponse(User user) {
-        return new UserResponse(user.getId(), user.getFirstName());
+    @PutMapping("/users/{userId}/courses/{courseId}")
+    public CourseResponse addCourseToUser(@PathVariable long userId, @PathVariable long courseId) {
+        return userService.addCourseToUser(userId, courseId);
     }
 }

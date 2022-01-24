@@ -1,20 +1,29 @@
 package com.kontociepok.studentsapp.courses.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.kontociepok.studentsapp.users.model.User;
+
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
 public class Course {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
+
+    @ManyToMany(cascade = { CascadeType.MERGE })
+    @JoinTable(
+            name = "users_courses",
+            joinColumns = { @JoinColumn(name = "course_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private Set<User> students;
 
     public Course(String name, String description) {
         this.name = name;
@@ -45,6 +54,21 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<User> students) {
+        this.students = students;
+    }
+
+    public void addStudent(User user){
+        if(students == null){
+            students = new HashSet<>();
+        }
+        students.add(user);
     }
 
     @Override

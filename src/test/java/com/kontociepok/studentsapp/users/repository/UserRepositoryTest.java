@@ -39,7 +39,7 @@ class UserRepositoryTest {
         userRepository.save(user);
 
         //when
-        var result = userRepository.getById(2L);
+        var result = userRepository.getById(1L);
 
         //then
         assertThat(result.getFirstName()).isEqualTo("Tomek");
@@ -68,7 +68,7 @@ class UserRepositoryTest {
         userRepository.save(user);
 
         //when
-        userRepository.deleteById(4L);
+        userRepository.deleteById(1L);
 
         //then
         assertThat(userRepository.findAll().size()).isEqualTo(0);

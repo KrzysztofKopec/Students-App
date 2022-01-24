@@ -1,42 +1,50 @@
 package com.kontociepok.studentsapp.courses.controller;
 
-import com.kontociepok.studentsapp.courses.model.Course;
-import com.kontociepok.studentsapp.courses.repository.CourseRepository;
+import com.kontociepok.studentsapp.users.controller.UserResponse;
+import com.kontociepok.studentsapp.courses.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class CourseController {
 
-    @Autowired
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
 
-    public CourseController(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    @Autowired
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     @GetMapping("/courses")
     List<CourseResponse> findAllCourses(){
-        return courseRepository.findAll().stream().map(this::convertToCourseResponse).collect(Collectors.toList());
+        return courseService.findAll();
     }
 
     @GetMapping("/courses/{courseId}")
     CourseResponse getCourse(@PathVariable long courseId) {
-        return courseRepository.findById(courseId).map(this::convertToCourseResponse).orElse(null);
+        return courseService.findById(courseId);
+    }
+
+    @GetMapping("/courses/{courseId}/users")
+    List<UserResponse> allUsersOfCourse(@PathVariable long courseId){
+        return courseService.allUsersOfCourse(courseId);
+    }
+
+    @DeleteMapping("courses/{courseId}")
+    CourseResponse deleteCourse(@PathVariable long courseId){
+        return courseService.deleteCourse(courseId);
     }
 
     @PostMapping("/courses")
     CourseResponse createCourse(@Valid @RequestBody CourseCreateDto courseCreateDto){
-        return convertToCourseResponse(courseRepository.save(new Course(courseCreateDto.getName(), courseCreateDto.getDescription())));
+        return courseService.createCourse(courseCreateDto);
     }
 
-    private CourseResponse convertToCourseResponse(Course course) {
-        return new CourseResponse(course.getId(), course.getName());
+    @PutMapping("/courses/{courseId}/users/{userId}")
+    public UserResponse addUserToCourse(@PathVariable long courseId, @PathVariable long userId) {
+        return courseService.addUserToCourse(userId, courseId);
     }
-
-
 }
