@@ -20,7 +20,7 @@ class CourseRepositoryTest {
     CourseRepository courseRepository;
 
     @Test
-    void shouldReturnSaveUserWhenExists(){
+    void shouldReturnSaveCourseWhenExists(){
         //given
         courseRepository.deleteAll();
         var course = new Course("Biology", "xyz");
@@ -33,7 +33,7 @@ class CourseRepositoryTest {
     }
 
     @Test
-    void shouldReturnUserWhenExists(){
+    void shouldReturnCourseWhenExists(){
         //given
         courseRepository.deleteAll();
         var course = new Course("Info","Basic");
@@ -47,7 +47,7 @@ class CourseRepositoryTest {
     }
 
     @Test
-    void shouldReturnAllUsersWhenExists(){
+    void shouldReturnAllCoursesWhenExists(){
         //given
         courseRepository.deleteAll();
         var course = new Course("History", "Kazimierz");
@@ -61,7 +61,7 @@ class CourseRepositoryTest {
     }
 
     @Test
-    void shouldDeleteUserByIdWhenExists(){
+    void shouldDeleteCourseByIdWhenExists(){
         //given
         courseRepository.deleteAll();
         var course = new Course("Math", "Pierwiastki");
