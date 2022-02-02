@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
 
-    CourseRepository courseRepository;
-    UserRepository userRepository;
+    private CourseRepository courseRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public CourseService(CourseRepository courseRepository, UserRepository userRepository) {
@@ -34,7 +34,8 @@ public class CourseService {
     }
 
     public CourseResponse createCourse(CourseCreateDto courseCreateDto) {
-        return convertToCourseResponse(courseRepository.save(new Course(courseCreateDto.getName(), courseCreateDto.getDescription())));
+        var course = new Course(courseCreateDto.getName(), courseCreateDto.getDescription());
+        return convertToCourseResponse(courseRepository.save(course));
     }
 
     public CourseResponse deleteCourse(long courseId) {
