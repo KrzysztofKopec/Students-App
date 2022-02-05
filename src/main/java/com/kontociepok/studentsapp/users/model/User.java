@@ -1,11 +1,10 @@
 package com.kontociepok.studentsapp.users.model;
 
 import com.kontociepok.studentsapp.courses.model.Course;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="users")
@@ -25,9 +24,12 @@ public class User {
     )
     private Set<Course> courses;
 
+    private Map<Long, List<Integer>> gradesCourses;
+
     public User(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+        gradesCourses = new HashMap<>();
     }
 
     public User() {
@@ -70,6 +72,14 @@ public class User {
             courses = new HashSet<>();
         }
         courses.add(course);
+    }
+
+    public Map<Long, List<Integer>> getGradesCourses() {
+        return gradesCourses;
+    }
+
+    public void addingACourseGrade(Long courseId, Integer grade) {
+        gradesCourses.computeIfAbsent(courseId, k -> new ArrayList<>()).add(grade);
     }
 
     @Override
