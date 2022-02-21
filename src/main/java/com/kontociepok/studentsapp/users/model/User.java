@@ -1,7 +1,8 @@
 package com.kontociepok.studentsapp.users.model;
 
 import com.kontociepok.studentsapp.courses.model.Course;
-import org.hibernate.annotations.Type;
+import com.kontociepok.studentsapp.grades.GradeCreate;
+import com.kontociepok.studentsapp.grades.Grade;
 
 import javax.persistence.*;
 import java.util.*;
@@ -24,12 +25,13 @@ public class User {
     )
     private Set<Course> courses;
 
-    private Map<Long, List<Integer>> gradesCourses;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private List<Grade> gradeCourse;
 
     public User(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        gradesCourses = new HashMap<>();
     }
 
     public User() {
@@ -74,12 +76,19 @@ public class User {
         courses.add(course);
     }
 
-    public Map<Long, List<Integer>> getGradesCourses() {
-        return gradesCourses;
+    public List<Grade> getGradesCourses() {
+        return gradeCourse;
     }
 
-    public void addingACourseGrade(Long courseId, Integer grade) {
-        gradesCourses.computeIfAbsent(courseId, k -> new ArrayList<>()).add(grade);
+    public void setGradesCourses(List<Grade> gradeCourse) {
+        this.gradeCourse = gradeCourse;
+    }
+
+    public void addingACourseGrade(GradeCreate grades){
+        if(gradeCourse == null){
+            gradeCourse = new ArrayList<>();
+        }
+        gradeCourse.add(new Grade(grades.getUserId(), grades.getCourseId(), grades.getGrade()));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.kontociepok.studentsapp.users.controller;
 
 import com.kontociepok.studentsapp.courses.controller.CourseResponse;
+import com.kontociepok.studentsapp.grades.GradeCreate;
+import com.kontociepok.studentsapp.grades.GradeResponse;
 import com.kontociepok.studentsapp.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,11 @@ public class UserController {
         return userService.allCoursesOfUser(userId);
     }
 
+    @GetMapping("/users/{userId}/gradesCourses")
+    List<GradeResponse> allgradesCoursesOfUser(@PathVariable long userId){
+        return userService.allgradesCoursesOfUser(userId);
+    }
+
     @DeleteMapping("users/{userId}")
     UserResponse deleteUser(@PathVariable long userId){
         return userService.deleteUser(userId);
@@ -46,5 +53,10 @@ public class UserController {
     @PutMapping("/users/{userId}/courses/{courseId}")
     public CourseResponse addCourseToUser(@PathVariable long userId, @PathVariable long courseId) {
         return userService.addCourseToUser(userId, courseId);
+    }
+
+    @PutMapping("/users/addGrade")
+    void addGrade(@Valid @RequestBody GradeCreate gradeCreate){
+        userService.addGrade(gradeCreate);
     }
 }
